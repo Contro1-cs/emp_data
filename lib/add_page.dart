@@ -126,7 +126,7 @@ class _AddPageState extends State<AddPage> {
                   //Upload button
                   SizedBox(height: 40,),
                   ElevatedButton(onPressed: () {
-                    createUser(name: name.text, role: role.text);
+                    createUser(name: name.text, role: role.text, days: difference);
                   }, child: Text("Upload")),
                 ],
               ),
@@ -136,12 +136,14 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Future createUser({required String name, required String role}) async {
+  Future createUser({required String name, required String role, required var days}) async {
     final docUser = FirebaseFirestore.instance.collection('users').doc(name);
 
     final json = {
       'name': name,
       'role':  role,
+      'days': days
+
     };
 
     await docUser.set(json);
