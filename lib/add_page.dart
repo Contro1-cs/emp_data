@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -123,7 +126,7 @@ class _AddPageState extends State<AddPage> {
                   //Upload button
                   SizedBox(height: 40,),
                   ElevatedButton(onPressed: () {
-
+                    createUser(name: name.text, role: role.text);
                   }, child: Text("Upload")),
                 ],
               ),
@@ -131,5 +134,17 @@ class _AddPageState extends State<AddPage> {
           ),
         ),)
     );
+  }
+
+  Future createUser({required String name, required String role}) async {
+    final docUser = FirebaseFirestore.instance.collection('users').doc(name);
+
+    final json = {
+      'name': name,
+      'role':  role,
+    };
+
+    await docUser.set(json);
+
   }
 }
