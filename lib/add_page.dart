@@ -19,6 +19,7 @@ class _AddPageState extends State<AddPage> {
   // DateTime date = DateTime(2012, 12, 17);
   String startDate = ' ' ;
   String difference = ' ' ;
+  var age;
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,9 @@ class _AddPageState extends State<AddPage> {
                       Duration diff = newDate?.difference(now) as Duration;
                       // startDate = newDate.toString();
                       startDate = DateFormat('dd-MM-yyyy').format(newDate!);
+                      age = diff.inDays;
                       difference = diff.inDays.toString();
+
                     }
                     );
                     if(newDate == null) return;
@@ -126,7 +129,14 @@ class _AddPageState extends State<AddPage> {
                   //Upload button
                   SizedBox(height: 40,),
                   ElevatedButton(onPressed: () {
-                    createUser(name: name.text, role: role.text, days: difference);
+
+                    if(age<=-1826){
+                      createUser(name: name.text, role: role.text, days: difference, color: 'green');
+                    } else {
+                    createUser(name: name.text, role: role.text, days: difference, color: 'red');
+                    }
+
+
                   }, child: Text("Upload")),
                 ],
               ),
@@ -136,14 +146,14 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Future createUser({required String name, required String role, required var days}) async {
+  Future createUser({required String name, required String role, required var days, required var color}) async {
     final docUser = FirebaseFirestore.instance.collection('users').doc(name);
 
     final json = {
       'name': name,
       'role':  role,
-      'days': days
-
+      'days': days,
+      'color': color,
     };
 
     await docUser.set(json);
