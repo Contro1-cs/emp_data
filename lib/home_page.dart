@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
             Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
             var bckColor;
-            if(data['color'] == 'green'){
+            if(data['color'] == 'green' && data['active'] == 'yes'){
               bckColor = Colors.green;
             } else if (data['color'] == 'red') {
               bckColor = Colors.red;

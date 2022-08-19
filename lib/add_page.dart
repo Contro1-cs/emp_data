@@ -16,6 +16,7 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   TextEditingController name = new TextEditingController();
   TextEditingController role = new TextEditingController();
+  TextEditingController active = new TextEditingController();
   // DateTime date = DateTime(2012, 12, 17);
   String startDate = ' ' ;
   String difference = ' ' ;
@@ -34,7 +35,7 @@ class _AddPageState extends State<AddPage> {
           child: Container(
             margin: const EdgeInsets.all(15),
             width: w,
-            height: w + 150,
+            height: w + 250,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 border: Border.all(color: Colors.black)
@@ -85,6 +86,23 @@ class _AddPageState extends State<AddPage> {
                       )
                   ),
 
+                  //Active?
+                  SizedBox(height: 20,),
+                  Text("Active status", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
+                  SizedBox(height: 10,),
+                  TextFormField(
+                      controller: active,
+                      autofocus: false,
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          )
+                      )
+                  ),
+
                   //Display selected date
                   SizedBox(height: 20,),
                   Text("Started working", style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),),
@@ -109,7 +127,8 @@ class _AddPageState extends State<AddPage> {
                       // startDate = newDate.toString();
                       startDate = DateFormat('dd-MM-yyyy').format(newDate!);
                       age = diff.inDays;
-                      difference = diff.inDays.toString();
+                      // difference = diff.inDays.toString();
+                      difference = (-1*age).toString();
 
                     }
                     );
@@ -130,10 +149,12 @@ class _AddPageState extends State<AddPage> {
                   SizedBox(height: 40,),
                   ElevatedButton(onPressed: () {
 
-                    if(age<=-1826){
-                      createUser(name: name.text, role: role.text, days: difference, color: 'green');
+                    if(age<=-1826 && active.text == 'yes'){
+                      createUser(name: name.text, role: role.text, days: difference, color: 'green', active: active.text);
+                    }else if (active.text == 'no'){
+                    createUser(name: name.text, role: role.text, days: difference, color: 'red', active: active.text);
                     } else {
-                    createUser(name: name.text, role: role.text, days: difference, color: 'red');
+                      createUser(name: name.text, role: role.text, days: difference, color: 'blue', active: active.text);
                     }
 
 
@@ -146,7 +167,7 @@ class _AddPageState extends State<AddPage> {
     );
   }
 
-  Future createUser({required String name, required String role, required var days, required var color}) async {
+  Future createUser({required String name, required String role, required var days, required var color, required String active}) async {
     final docUser = FirebaseFirestore.instance.collection('users').doc(name);
 
     final json = {
@@ -154,6 +175,7 @@ class _AddPageState extends State<AddPage> {
       'role':  role,
       'days': days,
       'color': color,
+      'active': active,
     };
 
     await docUser.set(json);
