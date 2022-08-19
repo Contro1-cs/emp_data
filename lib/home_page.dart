@@ -12,6 +12,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('users').snapshots();
 
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -28,9 +29,15 @@ class _HomePageState extends State<HomePage> {
         return ListView(
           children: snapshot.data!.docs.map((DocumentSnapshot document) {
             Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
+            var bckColor;
+            if(data['color'] == 'green'){
+              bckColor = Colors.green;
+            } else if (data['color'] == 'red') {
+              bckColor = Colors.red;
+            }
             return ListTile(
               contentPadding:const EdgeInsets.all(10),
-              leading: CircleAvatar(child: Text(data['color']),),
+              leading: CircleAvatar(backgroundColor: bckColor,),
               title: Text(data['name']),
               subtitle: Text(data['role']),
             );
